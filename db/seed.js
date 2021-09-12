@@ -7,10 +7,6 @@ const {
   updatePost,
   getAllPosts,
   getUserById,
-  getPostsByUser,
-  createTags,
-  createPostTag,
-  addTagsToPost,
   getPostsByTagName
 } = require('./index');
 
@@ -24,9 +20,7 @@ async function createInitialUsers() {
 
     const sandra = await createUser({ username: 'sandra', password: '2sandy4me', name: 'sandra', location: "there" });
     const glamgal = await createUser({ username: 'glamgal', password: 'soglam', name: 'Jill', location: "everywhere"})
-    console.log(albert);
-    console.log(sandra)
-    console.log(glamgal)
+
     console.log("Finished creating users!");
   } catch(error) {
     console.error("Error creating users!");
@@ -170,14 +164,12 @@ async function createTables() {
         active BOOLEAN DEFAULT true
       );
     `);
-    console.log('user/posts done')
         await client.query(`
       CREATE TABLE tags (
         id SERIAL PRIMARY KEY UNIQUE,
         name VARCHAR(255) UNIQUE NOT NULL
       );
     `);
-    console.log('tags done')
         await client.query(`
       CREATE TABLE post_tags (
         "postId" INTEGER REFERENCES posts(id) , 
