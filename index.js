@@ -1,4 +1,5 @@
 // inside index.js
+
 const PORT = 3000;
 const express = require('express');
 const apiRouter = require('./api');
@@ -7,7 +8,8 @@ const server = express();
 const { client } = require('./db');
 client.connect();
 
-server.use(express.json());
+const bodyParser = require('body-parser');
+server.use(bodyParser.json());
 server.use(morgan('dev'));
 
 server.listen(PORT, () => {
