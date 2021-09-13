@@ -46,8 +46,11 @@ apiRouter.use((req, res, next) => {
 });
 
 apiRouter.use((error, req, res, next) => {
+    console.log(error, 'here')
   res.send(error);
 });
+
+
 
 apiRouter.use('/users', usersRouter);
 apiRouter.use('/posts', postsRouter)

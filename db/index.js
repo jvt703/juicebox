@@ -75,6 +75,10 @@ async function createPost({
   }
 }
 
+
+
+
+
 async function updatePost(postId, fields = {
 
 }) 
@@ -87,6 +91,7 @@ async function updatePost(postId, fields = {
   const setString = Object.keys(fields).map(
     (key, index) => `"${ key }"=$${ index + 1 }`
   ).join(', ');
+  
   try {
     // update any fields that need to be updated
     if (setString.length > 0) {
@@ -116,7 +121,7 @@ async function updatePost(postId, fields = {
       NOT IN (${ tagListIdString })
       AND "postId"=$1;
     `, [postId]);
-
+    
     // and create post_tags as necessary
     await addTagsToPost(postId, tagList);
 
@@ -200,7 +205,6 @@ async function createTags(tagList) {
       ON CONFLICT (name) DO NOTHING 
       RETURNING *;
     `, tagList);
-    console.log('inserted')
     // select all tags where the name is in our taglist
     // return the rows from the query
     const { rows } = await client.query(
@@ -208,7 +212,6 @@ async function createTags(tagList) {
     FROM tags
     WHERE name In (${ selectValues });
     `, tagList);
-    console.log(rows)
     return rows
   } catch (error) {
     throw error;
@@ -248,7 +251,16 @@ async function getPostById(postId) {
       FROM posts
       WHERE id=$1;
     `, [postId]);
-    
+
+
+    if (!post) {
+      throw {
+        name: "PostNotFoundError",
+        message: "Could not find a post with that postId"
+      };
+    }
+
+
     const { rows: tags } = await client.query(`
       SELECT tags.*
       FROM tags
@@ -334,6 +346,7 @@ module.exports = {
   addTagsToPost,
   getPostsByTagName,
   getAllTags,
-  getUserByUsername
+  getUserByUsername,
+  getPostById
 }
 
